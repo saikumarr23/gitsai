@@ -1,0 +1,458 @@
+1)
+#include <iostream>
+#include<vector>
+using namespace std;
+class TaskScheduler{
+    public:
+    vector<string> mainMenuOptions;
+    vector<string> settingsMenuOptions;
+    vector<string> mediaMenuOptions;
+    vector<string> audioSettingsMenuOptions;
+    
+      TaskScheduler() {
+        mainMenuOptions = {"Settings", "Media", "Exit"};
+        settingsMenuOptions = {"DisplaySetting", "AudioSetting", "Back", "Exit"};
+        mediaMenuOptions = {"Radio", "BluetoothAudio", "Back", "Exit"};
+        audioSettingsMenuOptions = {"Sound", "Back", "Exit"};
+    }
+            void Menu(){
+                int choice;
+                while (true) {
+            cout << "\nMain Menu:" << endl;
+            displayMenu(mainMenuOptions);
+            cout << "Enter your choice: ";
+            cin >> choice;
+ 
+            switch (choice) {
+            case 0:
+                SettingsMenu(); 
+                break;
+            case 1:
+                MediaMenu(); 
+                break;
+            case 2:
+                cout << "Exiting program..." << endl;
+                return; 
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+            }
+        }
+    }
+    
+    void displayMenu(const vector<string>& menu) {
+        for (int i = 0; i < menu.size(); ++i) {
+            cout << i << ") " << menu[i] << endl;
+        }
+    }
+              void SettingsMenu(){
+                int choice;
+                while(true){
+            cout << "\nSettings Menu:" << endl;
+            displayMenu(settingsMenuOptions);
+            cout << "Enter your choice: ";
+            cin >> choice;
+   
+                switch(choice){
+                    case 0:
+                        DisplaySetting();
+                    break;
+                    
+                    case 1:
+                    AudioSetting();
+                    
+                    break;
+                    case 2:
+                    return;
+                    break;
+                    case 3:
+                    exit(0);
+                    break;
+                    
+                    default:
+                cout<<"your enter a wrong number"<<endl;
+                }
+            } 
+}
+ 
+        void MediaMenu(){
+                int choice;
+                 while (true) {
+                cout << "\nMedia Menu:" << endl;
+            displayMenu(mediaMenuOptions);
+            cout << "Enter your choice: ";
+            cin >> choice;
+   
+                switch(choice){
+                    case 0:
+                        Radio();
+                    break;
+                    
+                    case 1:
+                    BluetoothAudio();
+                    
+                    break;
+                    case 2:
+                    return;
+                    break;
+                    case 3:
+                    exit(0);
+                    break;
+                    default:
+                cout<<"your enter a wrong number"<<endl;
+                }
+            } 
+}
+        void DisplaySetting()
+        {
+        cout<<"your in the DisplaySetting"<<endl;
+    }
+        void AudioSetting()
+        {
+        int choice;
+                while(true){
+            cout << "\nAudio Settings:" << endl;
+            displayMenu(audioSettingsMenuOptions);
+            cout << "Enter your choice: ";
+            cin >> choice;
+ 
+        
+        switch(choice){
+            case 0:
+            sound();
+            break;
+            
+           case 1:
+            return;
+            break;
+            case 2:
+            exit(0);
+            break;
+             default:
+                cout<<"your enter a wrong number"<<endl;
+        }
+        }
+        }   
+        
+        void sound(){
+            cout<<"your in the sound"<<endl;
+            while(true){
+                 int choice;
+            cout<<"volume at 30 if u want change the volume \n 1)increse the volume\n 2)decrese the volume \n 3) Back\n0) exit"<<endl;
+            cout << "Enter your choice: ";
+            cin>>choice;
+                switch(choice){
+                    case 1:
+                    increse();
+                    break;
+                    case 2:
+                    decrese();
+                    break;
+               case 3:
+                return;
+                 break;
+                 case 0:
+                exit(0);
+                break;
+                
+                default:
+                cout<<"your enter a wrong number"<<endl;
+            }
+        }
+        }
+        void increse(){
+            int n;
+            cout<<"how much do you want to increase the sound"<<endl;
+            cin>>n;
+            cout << "Volume increased by " << n << ". New volume: " << (30 + n) << endl;
+            
+        }
+        void decrese(){
+            int n;
+            cout<<"how much do you want to decrease the sound"<<endl;
+            cin>>n;
+            cout << "Volume decreased by " << n << ". New volume: " << (30 - n) << endl;
+        }
+          void Radio()
+        {
+        cout<<"your in the Radio"<<endl;
+    }
+        void BluetoothAudio()
+        {
+        cout<<"your in the BluetoothAudio mode"<<endl;
+        }        
+};
+int main()
+{
+      TaskScheduler t;
+    t.Menu();
+ 
+    return 0;
+}
+
+
+
+
+
+
+2) 
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <random>
+#include <iomanip>
+#include<mutex>
+using namespace std;
+ 
+mutex mtx;
+class VehicleData{
+    public:
+    int speed;
+    int fuel;
+    int enginetemperature;
+    
+    VehicleData(int speed=0,int fuel=100,int enginetemperature=50){
+        this->speed=speed;
+        this->fuel=fuel;
+        this->enginetemperature=enginetemperature;
+    }
+    
+    void update(){
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<> speedDist(0, 220);  
+        uniform_int_distribution<> fuelDist(0, 100);
+        uniform_int_distribution<> tempDist(60, 120);  
+ 
+        speed = speedDist(gen);
+        fuel = fuelDist(gen);
+        enginetemperature = tempDist(gen);
+    }
+    
+};
+class Display{
+    public:
+    static void showData(VehicleData& data){
+       cout << "\r";
+        cout << "Speed: " << data.speed << " km/h\t";
+        cout << "Fuel: " << data.fuel << "%\t";
+        cout << "Temperature: " << data.enginetemperature << "°C\t";
+    
+    if (data.fuel < 10) {
+            cout << "[WARNING] Low Fuel!" << endl;
+            
+        }
+        if (data.enginetemperature > 110) {
+            cout << "[WARNING] High Engine Temperature!" << endl;
+            
+        }
+        if (data.speed > 160) {
+            cout << "[WARNING] High speed!" << endl;
+            exit(0);
+        }
+        
+        cout<<endl;
+        
+    }
+};
+ 
+ 
+void simulateUpdates(VehicleData &data) {
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1)); 
+         lock_guard<mutex> lock(mtx);
+        data.update();
+        
+        
+    }
+}
+ 
+void displayUpdates(VehicleData &data) {
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1)); 
+        lock_guard<mutex> lock(mtx); 
+        Display::showData(data);
+        
+    }
+}
+int main()
+{
+try {
+       
+        VehicleData v;
+        
+        
+        std::thread updateThread(simulateUpdates, ref(v));
+        std::thread displayThread(displayUpdates, ref(v));
+        
+        
+        updateThread.join();
+        displayThread.join();
+        
+    } catch (const std::exception &e) {
+        cerr << "Exception in main: " << e.what() << endl;
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+3)
+#include <iostream>
+#include <queue>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+using namespace std;
+ 
+class Event{
+    private:
+    int eventType;
+    int x,y;
+    std::time_t timestamp;
+    public:
+    Event(int eventType, int x, int y, std::time_t timestamp){
+        this->eventType=eventType;
+        this->x=x;
+        this->y=y;
+        this->timestamp=timestamp;
+    }
+     int getEventType() const {
+         return eventType;
+         }
+    int getX() const { 
+        return x; 
+        
+    }
+    int getY() const { 
+        return y; 
+        
+    }
+    std::time_t getTimestamp() const {
+        return timestamp; 
+        
+    }
+};
+    Event generateRandomEvent() {
+    int type = (rand() % 2) + 1; 
+    int x = rand() % 800;  
+    int y = rand() % 600;
+    std::time_t timestamp = std::time(0);
+    return Event(type, x, y, timestamp);
+}
+void processTap(const Event& event) {
+    std::cout << "Tap event at position: (" << event.getX() << ", " << event.getY() << ")\n";
+}
+void processSwipe(const Event& event) {
+    int startX = rand() % 800;
+    int startY = rand() % 600;
+ 
+    std::string direction;
+ 
+    if (event.getX() > startX) {
+        direction = (event.getY() > startY) ? "Up-Right" : "Down-Right";
+    } else {
+        direction = (event.getY() > startY) ? "Up-Left" : "Down-Left";
+    }
+ 
+    std::cout << "Swipe event detected, direction: " << direction << "\n";
+}
+int main()
+{
+    srand(static_cast<unsigned>(std::time(0)));  
+ 
+    std::queue<Event> eventQueue;
+    int numEvents = 10; 
+    for (int i = 0; i < numEvents; ++i) {
+        Event event = generateRandomEvent();
+        eventQueue.push(event);
+    }
+    
+    while (!eventQueue.empty()) {
+        Event currentEvent = eventQueue.front();
+        eventQueue.pop();
+ 
+        if (currentEvent.getEventType() == 1) { 
+            processTap(currentEvent);
+        } else if (currentEvent.getEventType() == 2) {  
+            processSwipe(currentEvent);
+        }
+    }
+ 
+    return 0;
+}
+
+
+
+4)
+#include<iostream>
+#include<map>
+using namespace std;
+ 
+class theme{
+    public:
+    
+    string bgcolor;
+    string fontcolor;
+    string fontsize;
+    string iconStyle;
+    
+     theme(string bgcolor = "white", string fontcolor = "black", string fontsize = "12", string iconStyle = "Styleicon") {
+        this->bgcolor = bgcolor;
+        this->fontcolor = fontcolor;
+        this->fontsize = fontsize;
+        this->iconStyle = iconStyle;
+    }
+ 
+    void display() {
+        cout << "Background color: " << bgcolor << endl
+             << "Font color: " << fontcolor << endl
+             << "Font size: " << fontsize << endl
+             << "Icon style: " << iconStyle << endl;
+    }
+};
+    
+int main()
+{
+    map<string,theme>themes;
+    themes["Classic"] = theme(" Light Gray", "Charcoal Gray", "18px", "Elegant");
+    themes["Sport"] = theme("Navy Blue", "White", "16px", " Bold");
+    themes["Eco"] = theme("Light Green", " Dark Green", " 14px", "Minimalist");
+    
+    theme th;
+    th.display();
+    string choice;
+    while(true){
+        cout<<"menu at the\n 1)Classic\n 2)Sport\n 3)Eco\n 4)exit"<<endl;
+        cout<<"enter the choice"<<endl;
+        cin>>choice;
+        
+            if(choice=="Classic" || choice=="1"){
+               themes["Classic"].display();
+               cout<<"changed completed successfully to the Classic"<<endl;
+               exit(0);
+    }
+    else if(choice=="Sport" || choice=="2"){
+        themes["Sport"].display();
+        cout<<"changed completed successfully to the Sport"<<endl;
+        exit(0);
+    }
+    else if(choice=="Eco" || choice=="3"){
+        themes["Eco"].display();
+        cout<<"changed completed successfully to the Eco"<<endl;
+        exit(0);
+    }
+    else{
+        cout<<"you exit from the the prgram please come back to use the program"<<endl;
+        exit(0);
+    }
+        }
+    return 0;
+}
